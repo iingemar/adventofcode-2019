@@ -1,11 +1,16 @@
 class FuelManagementSystem:
-    def __init__(self, wire_input):
-        wire_inputs = wire_input.split()
-        wire_inputs[0] = wire_inputs[0].split(',')
-        wire_inputs[1] = wire_inputs[1].split(',')
-        print()
-        print(wire_inputs[0])
-        print(wire_inputs[1])
+    def __init__(self, wire_input='', wire_1=None, wire_2=None):
+        if wire_input:
+            wire_inputs = wire_input.split()
+            wire_inputs[0] = wire_inputs[0].split(',')
+            wire_inputs[1] = wire_inputs[1].split(',')
+        else:
+            wire_inputs = [
+                [],
+                []
+            ]
+            wire_inputs[0] = wire_1.split(',')
+            wire_inputs[1] = wire_2.split(',')
 
         self.wire_paths = [
             [(0, 0)],
@@ -17,25 +22,24 @@ class FuelManagementSystem:
             self.get_direction(1, wire_point)
 
         intersections = self.get_intersections()
+        print('intersections: ' + str(intersections))
+
         distances = []
         for intersection in intersections:
             distance = self.get_distance(intersection)
             distances.append(distance)
-        print(distances)
+        print('distances: ' + str(distances))
+
         # Remove 0
         distances.remove(0)
         self.closest_intersection = min(distances)
-        print(self.closest_intersection)
+        print('closest_intersection: %s' % self.closest_intersection)
 
     def get_direction(self, wire_path_index, wire_point):
-        print(wire_point)
         direction = wire_point[0]
-        print(direction)
         length = wire_point[1:]
-        print(length)
         path = []
         starting_point = self.wire_paths[wire_path_index][-1]
-        print(starting_point)
         for x in range(int(length)):
             if direction == "U":
                 path.append((starting_point[0], starting_point[1] + 1))
@@ -46,15 +50,10 @@ class FuelManagementSystem:
             elif direction == "R":
                 path.append((starting_point[0] + 1, starting_point[1]))
             starting_point = path[-1]
-        print(path)
         self.wire_paths[wire_path_index].extend(path)
-        print(self.wire_paths[wire_path_index])
 
     def get_intersections(self):
-        intersections = list(set(self.wire_paths[0]).intersection(self.wire_paths[1]))
-        print('intersections')
-        print(intersections)
-        return intersections
+        return list(set(self.wire_paths[0]).intersection(self.wire_paths[1]))
 
     def get_distance(self, point):
         distance = abs(0 - point[0]) + abs(0 - point[1])
@@ -62,6 +61,7 @@ class FuelManagementSystem:
         return distance
 
 
-with open('input.txt') as f:
-    content = f.readlines()
-    FuelManagementSystem(content)
+if __name__ == "__main__":
+    with open('input.txt') as f:
+        content = f.readlines()
+        FuelManagementSystem('', content[0], content[1])
