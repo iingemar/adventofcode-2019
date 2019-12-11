@@ -15,18 +15,30 @@ class PasswordChecker:
 
     # Two adjacent digits are the same (like 22 in 122345).
     def has_two_adjacent_digits(self):
-        adjacent_counter = 1
+        adjacent_chars = []
+        results = []
         for idx, char in enumerate(self.password_str):
-            if idx == (len(self.password_str) - 1):
-                return False
-            next_character = self.password_str[idx + 1]
-            if char == next_character:
-                adjacent_counter += 1
-            else:
-                # When no more adjacent digits, check how many
-                adjacent_counter = 1
+            # print(adjacent_chars)
+            if not adjacent_chars:
+                adjacent_chars.append(char)
+                continue
 
-        return False
+            if adjacent_chars[0] == char:
+                adjacent_chars.append(char)
+            else:
+                if len(adjacent_chars) > 2:
+                    results.append(False)
+                elif len(adjacent_chars) == 2:
+                    results.append(True)
+                adjacent_chars = [char]
+            if idx == (len(self.password_str) - 1):
+                if len(adjacent_chars) > 2:
+                    results.append(False)
+                elif len(adjacent_chars) == 2:
+                    results.append(True)
+        # print(results)
+        # Return True if any element of the iterable is true.
+        return any(results)
 
     # Going from left to right, the digits never decrease; they only ever increase or stay the same.
     def never_decrease(self):
